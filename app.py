@@ -8,8 +8,8 @@ import asyncio, os, json, time
 from datetime import datetime
 from aiohttp import web
 import hashlib
-import re
 import xml.etree.ElementTree as ET
+import time
 
 def parse_xml(xmlData):
 	ToUserName = xmlData.find('ToUserName').text
@@ -20,6 +20,14 @@ def parse_xml(xmlData):
 	MsgId = xmlData.find('MsgId').text
 	#print(ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId)
 	return ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId
+
+def parse_subscribe_xml(xmlData):
+	ToUserName = xmlData.find('ToUserName').text
+	FromUserName = xmlData.find('FromUserName').text
+	CreateTime = xmlData.find('CreateTime').text
+	MsgType = xmlData.find('MsgType').text
+	#print(ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId)
+	return ToUserName,FromUserName,CreateTime,MsgType
 
 def get_text_reply_xml(ToUserName, FromUserName, Content):
 	raw_xml = '''<xml>
@@ -32,6 +40,7 @@ def get_text_reply_xml(ToUserName, FromUserName, Content):
 	raw_xml = raw_xml.replace("粉丝号",ToUserName)
 	raw_xml = raw_xml.replace("公众号", FromUserName)
 	raw_xml = raw_xml.replace("回复内容",Content)
+	raw_xml = raw_xml.replace("时间戳",int(time.time()))
 	return raw_xml
 
 
@@ -57,10 +66,11 @@ async def postWX(request):
 	info = await request.text()
 	logging.info("收到post请求:" + info)
 	xmlData = ET.fromstring(info)
-	ToUserName, FromUserName,CreateTime,MsgType,Content,MsgId = parse_xml(xmlData)
+	
 
 	result = 'success'
 	if MsgType.lower() == 'text':
+		ToUserName, FromUserName,CreateTime,MsgType,Content,MsgId = parse_xml(xmlData)
 		msg = get_text_reply_xml(FromUserName,ToUserName,"主人，我爱你噢")
 		return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'voice':
@@ -70,6 +80,7 @@ async def postWX(request):
 		Event = re.findall(reg, info)[0]
         # hu 接收事件推送（关注、取消关注等等）
 		if Event.lower() == 'subscribe':       # hu 用户关注事件
+			ToUserName, FromUserName,CreateTime,MsgType = parse_subscribe_xml(xmlData)
 			msg = get_text_reply_xml(FromUserName,ToUserName,"主人，欢迎你来到每日害羞图")
 			return web.Response(body=msg.encode('utf-8'))
 		elif Event.lower() == 'unsubscribe':  # hu 取消关注事件
