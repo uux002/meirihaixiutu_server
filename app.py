@@ -50,7 +50,7 @@ def load_conversition_config_csv():
 	try:
 		for row in csv_reader:
 			if(len(row) > 0):
-				auto_text_reply.append(row)
+				auto_text_reply.append(row[0])
 	finally:
 		pass
 	csv_file.close()
@@ -95,7 +95,8 @@ def get_publiced_article_for_ramdom():
 def get_random_text_reply_content():
 	count = len(auto_text_reply)
 	selected_index = random.randint(0,count - 1)
-	return auto_text_reply[selected_index]
+	msg = auto_text_reply[selected_index]
+	return msg
 
 # 解析用户发过来的xml
 def parse_xml(xmlData):
@@ -216,6 +217,11 @@ def init(loop):
 	app.router.add_route('POST','/wx',postWX)
 	load_article_config_csv()
 	load_conversition_config_csv()
+
+	content = get_random_text_reply_content()
+	msg = get_text_reply_xml("FredShao","MeiRiHaiXiuTu",content)
+	print(msg)
+
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1',7001)
 	logging.info('Server started at http://127.0.0.1:7001...')
 	return srv
