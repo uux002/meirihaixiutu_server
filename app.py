@@ -1,3 +1,8 @@
+# coding=utf-8
+import importlib,sys
+importlib.reload(sys)
+sys.setdefaultencoding('utf-8')
+
 import logging; logging.basicConfig(level=logging.INFO)
 import asyncio, os, json, time
 from datetime import datetime
@@ -13,9 +18,22 @@ def parse_xml(xmlData):
 	MsgType = xmlData.find('MsgType').text
 	Content = xmlData.find('Content').text
 	MsgId = xmlData.find('MsgId').text
-	print(type(Content))
-	print(ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId)
+	#print(ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId)
 	return ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId
+
+def get_text_reply_xml(ToUserName, FromUserName, Content):
+	raw_xml = '''<xml>
+<ToUserName><![CDATA[粉丝号]]></ToUserName>
+<FromUserName><![CDATA[公众号]]></FromUserName>
+<CreateTime>时间戳</CreateTime>
+<MsgType><![CDATA[text]]></MsgType>
+<Content><![CDATA[回复内容]]></Content>
+</xml>'''
+	raw_xml = raw_xml.replace("粉丝号",ToUserName)
+	raw_xml = raw_xml.replace("公众号", FromUserName)
+	raw_xml = raw_xml.replace("回复内容",Content)
+	return raw_xml
+
 
 
 def index(request):
@@ -43,8 +61,7 @@ async def postWX(request):
 
 	result = 'success'
 	if MsgType.lower() == 'text':
-		logging.info("收到文本消息：" + Content)
-		msg = "主人，我爱你"
+		msg = get_text_reply_xml(FromUserName,ToUserName,"主人，我爱你噢")
 		return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'voice':
 		pass
@@ -53,7 +70,7 @@ async def postWX(request):
 		Event = re.findall(reg, info)[0]
         # hu 接收事件推送（关注、取消关注等等）
 		if Event.lower() == 'subscribe':       # hu 用户关注事件
-			msg = "欢迎来到每日害羞图"
+			msg = get_text_reply_xml(FromUserName,ToUserName,"主人，欢迎你来到每日害羞图")
 			return web.Response(body=msg.encode('utf-8'))
 		elif Event.lower() == 'unsubscribe':  # hu 取消关注事件
 			pass
