@@ -7,10 +7,32 @@ import logging; logging.basicConfig(level=logging.INFO)
 import asyncio, os, json, time
 from datetime import datetime
 from aiohttp import web
+import aiohttp
 import hashlib
 import xml.etree.ElementTree as ET
 import time
 import random
+import urllib
+import ssl
+
+access_token = "hdvuPY4WkSCakjg9tSOSlYf2LIuG0JLfbTUDqkcc57xdjiBzV9CICEKjABPZvFT5Nv8D-P7btGEX-a5TpcYgZ4VnmeQhtGQfGumJ4V997xHgXgEOvkbvoOeeYBYjDAtJOFBiAGARIE"
+images_list_get_url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token="
+test_img_url = 'https://mmbiz.qpic.cn/mmbiz_jpg/WS65rNlb1aqhNRcqLmFb3J3kJdtX73U7bphlGPVbl0u448q4rlBF3iayEKmxRGtMviaVWj3tjglHXpS86t0f23xg/0?wx_fmt=jpeg'
+@asyncio.coroutine
+def get_images_list():
+	request_url = images_list_get_url + access_token
+	print(request_url)
+	dict_data = {"type":"image","offset":0,"count":20}
+	json_data = json.dumps(dict_data)
+	context = ssl._create_unverified_context()
+	req = urllib.request.Request(url=request_url, data=bytes(json_data,'utf-8'))
+	res = urllib.request.urlopen(req,context=context)
+	print(res.read().decode('utf-8'))
+	#response = yield from aiohttp.request('post',request_url,data=json_data)
+	#body = yield from response.read_and_close(decode=True)
+	#print(body)
+
+#get_images_list()
 
 auto_text_reply = [
 	'求你了老公,我不嘛',
@@ -69,7 +91,19 @@ def get_text_reply_xml(ToUserName, FromUserName, Content):
 	raw_xml = raw_xml.replace("时间戳",str(int(time.time())))
 	return raw_xml
 
-
+def get_image_reply_xml(ToUserName,FromUserName):
+	raw_xml = '''<xml>
+<ToUserName><![CDATA[粉丝号]]></ToUserName>
+<FromUserName><![CDATA[公众号]]></FromUserName>
+<CreateTime>时间戳</CreateTime>
+<MsgType><![CDATA[image]]></MsgType>
+<PicUrl><![CDAtA[图片地址]]></PicUrl>
+</xml>'''
+	raw_xml = raw_xml.replace("粉丝号",ToUserName)
+	raw_xml = raw_xml.replace("公众号", FromUserName)
+	raw_xml = raw_xml.replace("图片地址",test_img_url)
+	raw_xml = raw_xml.replace("时间戳",str(int(time.time())))
+	return raw_xml	
 
 def index(request):
 	echostr = 'success'
@@ -109,7 +143,8 @@ async def postWX(request):
 		Event = re.findall(reg, info)[0]
         # hu 接收事件推送（关注、取消关注等等）
 		if Event.lower() == 'subscribe':       # hu 用户关注事件
-			msg = get_text_reply_xml(FromUserName,ToUserName,"主人，欢迎你来到每日害羞图，我会好好爱你的，嘿嘿")
+			#msg = get_text_reply_xml(FromUserName,ToUserName,"主人，欢迎你来到每日害羞图，我会好好爱你的，嘿嘿")
+			msg = get_image_reply_xml(FromUserName,ToUserName)
 			return web.Response(body=msg.encode('utf-8'))
 		elif Event.lower() == 'unsubscribe':  # hu 取消关注事件
 			pass
@@ -122,7 +157,9 @@ def init(loop):
 	app.router.add_route('GET','/wx',index)
 	app.router.add_route('POST','/wx',postWX)
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1',7000)
+	#yield from get_images_list()
 	logging.info('Server started at http://127.0.0.1:7000...')
+	get_images_list()
 	return srv
 
 loop = asyncio.get_event_loop()
