@@ -27,11 +27,13 @@ async def postWX(request):
 	reg = r'''<xml><ToUserName><!\[CDATA\[(.*?)\]\]></ToUserName>
 	<FromUserName><!\[CDATA\[(.*?)\]\]></FromUserName>
 	<CreateTime>(.*?)</CreateTime>
-	<MsgType><!\[CDATA\[(.*?)\]\]></MsgType>'''
-	ToUserName, FromUserName, CreateTime, MsgType = re.findall(reg, info)[0]
+	<MsgType><!\[CDATA\[(.*?)\]\]></MsgType>
+	<Content><!\[CDATA\[(.*?)\]\]></Content>'''
+	ToUserName, FromUserName, CreateTime, MsgType, Content = re.findall(reg, info)[0]
 
 	result = 'success'
 	if MsgType.lower() == 'text':
+		logging.info("收到文本消息：" + Content)
 		msg = "主人，我爱你"
 		return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'voice':
