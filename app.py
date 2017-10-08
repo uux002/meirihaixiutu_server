@@ -111,7 +111,7 @@ def parse_xml(xmlData):
 
 def parse_xml_text(xmlData):
 	Content = xmlData.find('Content').text
-	return Content.decode('utf-8')
+	return Content
 
 # 解析用户发来的文本xml
 def get_text_reply_xml(ToUserName, FromUserName, Content):
@@ -198,8 +198,11 @@ async def postWX(request):
 		#content = get_random_text_reply_content()
 		#msg = get_text_reply_xml(FromUserName,ToUserName,content)
 		content = parse_xml_text(xmlData)
-		print("type:",type(content))
-		return web.Response(body=msg.encode('utf-8'))
+		if(content == "我想要"):
+			msg = get_image_and_text_reply_xml(FromUserName,ToUserName)
+			return web.Response(body=msg.encode('utf-8'))
+		else:
+			return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'voice':
 		#msg = get_image_reply_xml(FromUserName,ToUserName)
 		msg = get_image_and_text_reply_xml(FromUserName,ToUserName)
