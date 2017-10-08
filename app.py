@@ -1,7 +1,7 @@
 # coding=utf-8
-import importlib,sys
-importlib.reload(sys)
-sys.setdefaultencoding('utf-8')
+#import importlib,sys
+#importlib.reload(sys)
+#sys.setdefaultencoding('utf-8')
 
 import logging; logging.basicConfig(level=logging.INFO)
 import asyncio, os, json, time
