@@ -11,7 +11,7 @@ def parse_xml(xmlData):
 	FromUserName = xmlData.find('FromUserName').text
 	CreateTime = xmlData.find('CreateTime').text
 	MsgType = xmlData.find('MsgType').text
-	Content = xmlData.find('Content')text
+	Content = xmlData.find('Content').text
 	MsgId = xmlData.find('MsgId').text
 	print(type(Content))
 	print(ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId)
