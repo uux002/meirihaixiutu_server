@@ -22,8 +22,31 @@ def index(request):
 	#resp.content_type = 'text/html;charset=utf-8'
 	#return resp
 
-def postWX(request):
-	pass
+async def postWX(request):
+	info = await request.text()
+	reg = r'''<xml><ToUserName><!\[CDATA\[(.*?)\]\]></ToUserName>
+	<FromUserName><!\[CDATA\[(.*?)\]\]></FromUserName>
+	<CreateTime>(.*?)</CreateTime>
+	<MsgType><!\[CDATA\[(.*?)\]\]></MsgType>'''
+	ToUserName, FromUserName, CreateTime, MsgType = re.findall(reg, info)[0]
+
+	result = 'success'
+	if MsgType.lower() == 'text':
+		msg = "主人，我爱你"
+		return web.Response(body=msg.encode('utf-8'))
+	elif MsgType.lower() == 'voice':
+		pass
+	elif MsgType.lower() == 'event':
+		reg = r'''<Event><!\[CDATA\[(.*?)\]\]></Event>'''
+		Event = re.findall(reg, info)[0]
+        # hu 接收事件推送（关注、取消关注等等）
+		if Event.lower() == 'subscribe':       # hu 用户关注事件
+			msg = "欢迎来到每日害羞图"
+			return web.Response(body=msg.encode('utf-8'))
+		elif Event.lower() == 'unsubscribe':  # hu 取消关注事件
+			pass
+	
+	return web.Response(body=result.encode('utf-8'))
 
 @asyncio.coroutine
 def init(loop):
