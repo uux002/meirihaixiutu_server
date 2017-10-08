@@ -1,49 +1,33 @@
 INFO:root:Server started at http://127.0.0.1:7001...
-INFO:root:\u6536\u5230post\u8bf7\u6c42:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
+INFO:root:收到post请求:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
 <FromUserName><![CDATA[o5_t70-hujsuT7HsyD8EhkwFjcNs]]></FromUserName>
-<CreateTime>1507456512</CreateTime>
+<CreateTime>1507476242</CreateTime>
 <MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[zzz]]></Content>
-<MsgId>6474476419606945798</MsgId>
+<Content><![CDATA[哈哈哈]]></Content>
+<MsgId>6474561159311711841</MsgId>
 </xml>
-INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:09:55:12 +0000] "POST /wx?signature=ea9015f60c3a1ae16368dd37ccddf840068aaa73&timestamp=1507456512&nonce=1043141614&openid=o5_t70-hujsuT7HsyD8EhkwFjcNs HTTP/1.0" 200 439 "-" "Mozilla/4.0"
-INFO:root:\u6536\u5230post\u8bf7\u6c42:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
+INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:15:24:03 +0000] "POST /wx?signature=7bf0478bfd26fd98d59050a4a62a24fa83befad3&timestamp=1507476243&nonce=179368438&openid=o5_t70-hujsuT7HsyD8EhkwFjcNs HTTP/1.0" 200 406 "-" "Mozilla/4.0"
+INFO:root:收到post请求:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
 <FromUserName><![CDATA[o5_t70-hujsuT7HsyD8EhkwFjcNs]]></FromUserName>
-<CreateTime>1507456548</CreateTime>
-<MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[\u6211\u60f3\u8981]]></Content>
-<MsgId>6474476574225768481</MsgId>
+<CreateTime>1507476249</CreateTime>
+<MsgType><![CDATA[event]]></MsgType>
+<Event><![CDATA[unsubscribe]]></Event>
+<EventKey><![CDATA[]]></EventKey>
 </xml>
-INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:09:55:49 +0000] "POST /wx?signature=638a3a92e2ee529a8bd927f5efc44ac7f077cf5d&timestamp=1507456549&nonce=16896247&openid=o5_t70-hujsuT7HsyD8EhkwFjcNs HTTP/1.0" 200 803 "-" "Mozilla/4.0"
-INFO:root:\u6536\u5230post\u8bf7\u6c42:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
+INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:15:24:09 +0000] "POST /wx?signature=7dd63215638c8e16374570afe15f679d9e27c6c1&timestamp=1507476249&nonce=142453229&openid=o5_t70-hujsuT7HsyD8EhkwFjcNs HTTP/1.0" 200 417 "-" "Mozilla/4.0"
+INFO:root:收到post请求:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
 <FromUserName><![CDATA[o5_t70-hujsuT7HsyD8EhkwFjcNs]]></FromUserName>
-<CreateTime>1507456567</CreateTime>
-<MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[\u54c8\u54c8]]></Content>
-<MsgId>6474476655830147136</MsgId>
-</xml>
-INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:09:56:07 +0000] "POST /wx?signature=462c10b0abd28574656dc71defc526d6e9399977&timestamp=1507456567&nonce=1600312108&openid=o5_t70-hujsuT7HsyD8EhkwFjcNs HTTP/1.0" 200 427 "-" "Mozilla/4.0"
-INFO:root:\u6536\u5230post\u8bf7\u6c42:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
-<FromUserName><![CDATA[o5_t70-hujsuT7HsyD8EhkwFjcNs]]></FromUserName>
-<CreateTime>1507456572</CreateTime>
-<MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[\u4f60\u59b9]]></Content>
-<MsgId>6474476677304983620</MsgId>
-</xml>
-INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:09:56:13 +0000] "POST /wx?signature=8742c956a4151e868789f0f8b0d5594969a6d6c4&timestamp=1507456572&nonce=771848737&openid=o5_t70-hujsuT7HsyD8EhkwFjcNs HTTP/1.0" 200 442 "-" "Mozilla/4.0"
-INFO:root:\u6536\u5230post\u8bf7\u6c42:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
-<FromUserName><![CDATA[o5_t7006tsSUP2tkB5_3qfn-T41Y]]></FromUserName>
-<CreateTime>1507456851</CreateTime>
+<CreateTime>1507476264</CreateTime>
 <MsgType><![CDATA[event]]></MsgType>
 <Event><![CDATA[subscribe]]></Event>
 <EventKey><![CDATA[]]></EventKey>
 </xml>
-INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:10:00:51 +0000] "POST /wx?signature=080c626b2772bf82c0c07359a864a2a0506c8f8b&timestamp=1507456851&nonce=360663757&openid=o5_t7006tsSUP2tkB5_3qfn-T41Y HTTP/1.0" 200 561 "-" "Mozilla/4.0"
-INFO:root:\u6536\u5230post\u8bf7\u6c42:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
-<FromUserName><![CDATA[o5_t7006tsSUP2tkB5_3qfn-T41Y]]></FromUserName>
-<CreateTime>1507456857</CreateTime>
+INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:15:24:24 +0000] "POST /wx?signature=5cdcb9cb2160aaa435f9b43f4411d7cda3905021&timestamp=1507476264&nonce=233009150&openid=o5_t70-hujsuT7HsyD8EhkwFjcNs HTTP/1.0" 200 971 "-" "Mozilla/4.0"
+INFO:root:收到post请求:<xml><ToUserName><![CDATA[gh_4347b6a299e7]]></ToUserName>
+<FromUserName><![CDATA[o5_t70-hujsuT7HsyD8EhkwFjcNs]]></FromUserName>
+<CreateTime>1507476465</CreateTime>
 <MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[\u6211\u60f3\u8981]]></Content>
-<MsgId>6474477901370663205</MsgId>
+<Content><![CDATA[我想要]]></Content>
+<MsgId>6474562117089419007</MsgId>
 </xml>
-INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:10:00:57 +0000] "POST /wx?signature=f5f0126f232358f236a48d791eb071127762eac0&timestamp=1507456857&nonce=404668904&openid=o5_t7006tsSUP2tkB5_3qfn-T41Y HTTP/1.0" 200 803 "-" "Mozilla/4.0"
+INFO:aiohttp.access:127.0.0.1 - - [08/Oct/2017:15:27:45 +0000] "POST /wx?signature=f0f88ca4fdb34493d639cc849385ec055a11b845&timestamp=1507476465&nonce=810028325&openid=o5_t70-hujsuT7HsyD8EhkwFjcNs HTTP/1.0" 200 814 "-" "Mozilla/4.0"
