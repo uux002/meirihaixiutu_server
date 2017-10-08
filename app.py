@@ -137,7 +137,8 @@ async def postWX(request):
 		#msg = get_text_reply_xml(FromUserName,ToUserName,content)
 		return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'voice':
-		pass
+		msg = get_image_reply_xml(FromUserName,ToUserName)
+		return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'event':
 		reg = r'''<Event><!\[CDATA\[(.*?)\]\]></Event>'''
 		Event = re.findall(reg, info)[0]
