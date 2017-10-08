@@ -93,11 +93,14 @@ async def postWX(request):
 	logging.info("收到post请求:" + info)
 	xmlData = ET.fromstring(info)
 	ToUserName, FromUserName,CreateTime,MsgType = parse_xml(xmlData)
+
+	content = get_random_text_reply_content()
+	msg = get_text_reply_xml(FromUserName,ToUserName,content)
 	
 	result = 'success'
 	if MsgType.lower() == 'text':
-		content = get_random_text_reply_content()
-		msg = get_text_reply_xml(FromUserName,ToUserName,content)
+		#content = get_random_text_reply_content()
+		#msg = get_text_reply_xml(FromUserName,ToUserName,content)
 		return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'voice':
 		pass
@@ -111,7 +114,7 @@ async def postWX(request):
 		elif Event.lower() == 'unsubscribe':  # hu 取消关注事件
 			pass
 	
-	return web.Response(body=result.encode('utf-8'))
+	return web.Response(body=msg.encode('utf-8'))
 
 @asyncio.coroutine
 def init(loop):
