@@ -212,7 +212,6 @@ async def postWX(request):
         # hu 接收事件推送（关注、取消关注等等）
 		if event.lower() == 'subscribe':       # hu 用户关注事件
 			msg = get_text_reply_xml(FromUserName,ToUserName,"主人，欢迎你来到每日害羞图，每天傍晚，我都会给你一些不一样的惊喜，嘿嘿\n\n现在试试下面的指令，或许会有意外噢\n\n- 我想要")
-			msg = msg + msg
 			#msg = get_image_reply_xml(FromUserName,ToUserName)
 			return web.Response(body=msg.encode('utf-8'))
 		elif event.lower() == 'unsubscribe':  # hu 取消关注事件
