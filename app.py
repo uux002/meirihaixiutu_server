@@ -109,6 +109,10 @@ def parse_xml(xmlData):
 	#print(ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId)
 	return ToUserName,FromUserName,CreateTime,MsgType
 
+def parse_xml_text(xmlData):
+	Content = xmlData.find('Content').text
+	return Content.decode('utf-8')
+
 # 解析用户发来的文本xml
 def get_text_reply_xml(ToUserName, FromUserName, Content):
 	raw_xml = '''<xml>
@@ -193,6 +197,8 @@ async def postWX(request):
 	if MsgType.lower() == 'text':
 		#content = get_random_text_reply_content()
 		#msg = get_text_reply_xml(FromUserName,ToUserName,content)
+		content = parse_xml_text(xmlData)
+		print("type:",type(content))
 		return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'voice':
 		#msg = get_image_reply_xml(FromUserName,ToUserName)
@@ -202,7 +208,7 @@ async def postWX(request):
 		event = xmlData.find('Event').text
         # hu 接收事件推送（关注、取消关注等等）
 		if event.lower() == 'subscribe':       # hu 用户关注事件
-			msg = get_text_reply_xml(FromUserName,ToUserName,"主人，欢迎你来到每日害羞图，我会好好爱你的，嘿嘿\n试试下面的指令，或许会有意外的惊喜噢\n- 我想要")
+			msg = get_text_reply_xml(FromUserName,ToUserName,"主人，欢迎你来到每日害羞图，每天傍晚，我都会给你一些不一样的惊喜，嘿嘿\n\n现在试试下面的指令，或许会有意外噢\n\n- 我想要")
 			#msg = get_image_reply_xml(FromUserName,ToUserName)
 			return web.Response(body=msg.encode('utf-8'))
 		elif event.lower() == 'unsubscribe':  # hu 取消关注事件
