@@ -51,7 +51,6 @@ def load_conversition_config_csv():
 		for row in csv_reader:
 			if(len(row) > 0):
 				auto_text_reply.append(row)
-				print(row)
 	finally:
 		pass
 	csv_file.close()
@@ -83,12 +82,10 @@ def load_article_config_csv():
 	finally:
 		pass
 	csv_file.close()
-	print("已发表图文数量：",len(public_article_list))
 
 # 从已发布的文章中随机选择一篇推送给用户
 def get_publiced_article_for_ramdom():
 	count = len(public_article_list)
-	print("数量:",count)
 	selected_index = random.randint(0,count - 1)
 	article = public_article_list[selected_index]
 	return article
