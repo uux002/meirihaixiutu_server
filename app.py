@@ -4,7 +4,24 @@ from datetime import datetime
 from aiohttp import web
 import hashlib
 import re
+import xml.etree.ElementTree as ET
 
+def parse_xml(xmlData):
+	ToUserName = xmlData.find('ToUserName').text
+	FromUserName = xmlData.find('FromUserName').text
+	CreateTime = xmlData.find('CreateTime').text
+	MsgType = xmlData.find('MsgType').text
+	Content = xmlData.find('Content').text.encode('utf-8')
+	MsgId = xmlData.find('MsgId').text
+
+	print(ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId)
+	return ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId
+'''
+xml_str = '''<xml><URL><![CDATA[http://meirihaixiutu.fredshao.cc/wx]]></URL><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fredshao]]></FromUserName><CreateTime>1111111</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[hello]]></Content><MsgId>89874541</MsgId></xml>'''
+xmlData = ET.fromstring(xml_str)
+print(xmlData.find('MsgType').text)
+parse_xml(xmlData)
+'''
 
 def index(request):
 	echostr = 'success'
@@ -26,12 +43,8 @@ def index(request):
 async def postWX(request):
 	info = await request.text()
 	logging.info("收到post请求:" + info)
-	reg = r'''<xml><ToUserName><!\[CDATA\[(.*?)\]\]></ToUserName>
-	<FromUserName><!\[CDATA\[(.*?)\]\]></FromUserName>
-	<CreateTime>(.*?)</CreateTime>
-	<MsgType><!\[CDATA\[(.*?)\]\]></MsgType>
-	<Content><!\[CDATA\[(.*?)\]\]></Content>'''
-	ToUserName, FromUserName, CreateTime, MsgType, Content = re.findall(reg, info)[0]
+	xmlData = ET.fromstring(info)
+	ToUserName, FromUserName,CreateTime,MsgType,Content,MsgId = parse_xml(xmlData)
 
 	result = 'success'
 	if MsgType.lower() == 'text':
@@ -64,3 +77,5 @@ def init(loop):
 loop = asyncio.get_event_loop()
 loop.run_until_complete(init(loop))
 loop.run_forever()
+
+
