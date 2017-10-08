@@ -16,12 +16,7 @@ def parse_xml(xmlData):
 
 	print(ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId)
 	return ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId
-'''
-xml_str = '''<xml><URL><![CDATA[http://meirihaixiutu.fredshao.cc/wx]]></URL><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fredshao]]></FromUserName><CreateTime>1111111</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[hello]]></Content><MsgId>89874541</MsgId></xml>'''
-xmlData = ET.fromstring(xml_str)
-print(xmlData.find('MsgType').text)
-parse_xml(xmlData)
-'''
+
 
 def index(request):
 	echostr = 'success'
