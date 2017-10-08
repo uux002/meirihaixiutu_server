@@ -15,9 +15,10 @@ import random
 import urllib
 import ssl
 
-access_token = "hdvuPY4WkSCakjg9tSOSlYf2LIuG0JLfbTUDqkcc57xdjiBzV9CICEKjABPZvFT5Nv8D-P7btGEX-a5TpcYgZ4VnmeQhtGQfGumJ4V997xHgXgEOvkbvoOeeYBYjDAtJOFBiAGARIE"
+access_token = "DLJcm9xzAbeVy_71x96Bfo3riNhQFzM9msiQm9qc9PULO0_nhOfG4KcRTPUwA-UTdgHHZsGCirP1AkMy7kbkDpTDUWncViyMq0zQSt2HZeQSIZgAJAKAR"
 images_list_get_url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token="
 test_img_url = 'https://mmbiz.qpic.cn/mmbiz_jpg/WS65rNlb1aqhNRcqLmFb3J3kJdtX73U7bphlGPVbl0u448q4rlBF3iayEKmxRGtMviaVWj3tjglHXpS86t0f23xg/0?wx_fmt=jpeg'
+
 @asyncio.coroutine
 def get_images_list():
 	request_url = images_list_get_url + access_token
@@ -103,7 +104,34 @@ def get_image_reply_xml(ToUserName,FromUserName):
 	raw_xml = raw_xml.replace("公众号", FromUserName)
 	raw_xml = raw_xml.replace("图片地址",test_img_url)
 	raw_xml = raw_xml.replace("时间戳",str(int(time.time())))
-	return raw_xml	
+	return raw_xml
+
+def get_image_and_text_reply_xml(ToUserName, FromUserName):
+	raw_xml = '''<xml>
+<ToUserName><![CDATA[粉丝号]]></ToUserName>
+<FromUserName><![CDATA[公众号]]></FromUserName>
+<CreateTime>时间戳</CreateTime>
+<MsgType><![CDATA[news]]></MsgType>
+<ArticleCount>2</ArticleCount>
+<Articles>
+<item>
+<Title><![CDATA[标题1]]></Title> 
+<Description><![CDATA[这里是描述1]]></Description>
+<PicUrl><![CDATA[https://mmbiz.qpic.cn/mmbiz_png/WS65rNlb1arLwGNG3ooArU883uoCFSfhqohoicG93jhcISWRfNcmpyKgHlMVZzvICMib0PWicfOkkLSLSYycfRq1g/0?wx_fmt=png]]></PicUrl>
+<Url><![CDATA[http://www.baidu.com]]></Url>
+</item>
+<item>
+<Title><![CDATA[标题2]]></Title>
+<Description><![CDATA[这里是描述2]]></Description>
+<PicUrl><![CDATA[https://mmbiz.qpic.cn/mmbiz_png/WS65rNlb1aqhNRcqLmFb3J3kJdtX73U72qwdXliaHXlks8YxtD5LojC7obpEIW38GjuA2iawdcXzV1RIBDSGGYRg/0?wx_fmt=png]]></PicUrl>
+<Url><![CDATA[http://www.163.com]]></Url>
+</item>
+</Articles>
+</xml>'''
+	raw_xml = raw_xml.replace("粉丝号",ToUserName)
+	raw_xml = raw_xml.replace("公众号", FromUserName)
+	raw_xml = raw_xml.replace("时间戳",str(int(time.time())))	
+	return raw_xml
 
 def index(request):
 	echostr = 'success'
@@ -137,7 +165,8 @@ async def postWX(request):
 		#msg = get_text_reply_xml(FromUserName,ToUserName,content)
 		return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'voice':
-		msg = get_image_reply_xml(FromUserName,ToUserName)
+		#msg = get_image_reply_xml(FromUserName,ToUserName)
+		msg = get_image_and_text_reply_xml(FromUserName,ToUserName)
 		return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'event':
 		event = xmlData.find('Event').text
