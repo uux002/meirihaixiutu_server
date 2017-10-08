@@ -66,7 +66,7 @@ def get_text_reply_xml(ToUserName, FromUserName, Content):
 	raw_xml = raw_xml.replace("粉丝号",ToUserName)
 	raw_xml = raw_xml.replace("公众号", FromUserName)
 	raw_xml = raw_xml.replace("回复内容",Content)
-	raw_xml = raw_xml.replace("时间戳",int(time.time()))
+	raw_xml = raw_xml.replace("时间戳",str(int(time.time())))
 	return raw_xml
 
 
