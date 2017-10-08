@@ -215,12 +215,9 @@ def init(loop):
 	app = web.Application(loop=loop)
 	app.router.add_route('GET','/wx',index)
 	app.router.add_route('POST','/wx',postWX)
+	
 	load_article_config_csv()
 	load_conversition_config_csv()
-
-	content = get_random_text_reply_content()
-	msg = get_text_reply_xml("FredShao","MeiRiHaiXiuTu",content)
-	print(msg)
 
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1',7001)
 	logging.info('Server started at http://127.0.0.1:7001...')
