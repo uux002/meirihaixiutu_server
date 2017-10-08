@@ -143,8 +143,8 @@ async def postWX(request):
 		event = xmlData.find('Event').text
         # hu 接收事件推送（关注、取消关注等等）
 		if event.lower() == 'subscribe':       # hu 用户关注事件
-			#msg = get_text_reply_xml(FromUserName,ToUserName,"主人，欢迎你来到每日害羞图，我会好好爱你的，嘿嘿")
-			msg = get_image_reply_xml(FromUserName,ToUserName)
+			msg = get_text_reply_xml(FromUserName,ToUserName,"主人，欢迎你来到每日害羞图，我会好好爱你的，嘿嘿")
+			#msg = get_image_reply_xml(FromUserName,ToUserName)
 			return web.Response(body=msg.encode('utf-8'))
 		elif event.lower() == 'unsubscribe':  # hu 取消关注事件
 			pass
