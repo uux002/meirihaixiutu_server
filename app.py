@@ -24,6 +24,7 @@ def index(request):
 
 async def postWX(request):
 	info = await request.text()
+	logging.info("收到post请求:" + info)
 	reg = r'''<xml><ToUserName><!\[CDATA\[(.*?)\]\]></ToUserName>
 	<FromUserName><!\[CDATA\[(.*?)\]\]></FromUserName>
 	<CreateTime>(.*?)</CreateTime>
