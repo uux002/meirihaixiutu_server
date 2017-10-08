@@ -14,60 +14,93 @@ import time
 import random
 import urllib
 import ssl
+import csv
+import threading
+
+article_config_lock = threading.Lock()
+conversition_config_lock = threading.Lock()
+
+article_config_file = "article_config.csv"
+conversition_config_file = "conversiton.csv"
 
 access_token = "DLJcm9xzAbeVy_71x96Bfo3riNhQFzM9msiQm9qc9PULO0_nhOfG4KcRTPUwA-UTdgHHZsGCirP1AkMy7kbkDpTDUWncViyMq0zQSt2HZeQSIZgAJAKAR"
 images_list_get_url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token="
 test_img_url = 'https://mmbiz.qpic.cn/mmbiz_jpg/WS65rNlb1aqhNRcqLmFb3J3kJdtX73U7bphlGPVbl0u448q4rlBF3iayEKmxRGtMviaVWj3tjglHXpS86t0f23xg/0?wx_fmt=jpeg'
 
-@asyncio.coroutine
-def get_images_list():
-	request_url = images_list_get_url + access_token
-	print(request_url)
-	dict_data = {"type":"image","offset":0,"count":20}
-	json_data = json.dumps(dict_data)
-	context = ssl._create_unverified_context()
-	req = urllib.request.Request(url=request_url, data=bytes(json_data,'utf-8'))
-	res = urllib.request.urlopen(req,context=context)
-	print(res.read().decode('utf-8'))
-	#response = yield from aiohttp.request('post',request_url,data=json_data)
-	#body = yield from response.read_and_close(decode=True)
-	#print(body)
+unpublic_article_list = []
+public_article_list = []
+auto_text_reply = []
 
-#get_images_list()
+class Article:
+	def __init__(self, title,des, permanent_url, conver_url, public_date, public_symbol):
+		self.title = title
+		self.des = des
+		self.permanent_url = permanent_url
+		self.conver_url = conver_url
+		self.public_date = public_date
+		self.is_publiced = False
+		if public_symbol.lower() == 'y':
+			self.is_publiced = True
 
-auto_text_reply = [
-	'求你了老公,我不嘛',
-	'人家以后再也不理你了啦!',
-	'别这样啦，人家是个女孩子嘛!',
-	'别这样啦，之前你不是这个样子的嘛!',
-	'不嘛不嘛，我要我要',
-	'人家就是想要你多关心一点!',
-	'就要就要，人家就要，不给就不理你了',
-	'你坏哦! 我要告诉妈妈说你欺负女孩子!',
-	'你好讨厌哦!',
-	'没人跟你一起啊! 我陪你吧!',
-	'你今天有没有想念人家呀!',
-	'人家不开心',
-	'你好坏哦，欺负人家，哼!',
-	'老公，帮我拎着包裹，你看人家的小手，都勒出红印来了',
-	'老公，我累了，你去做饭吧，求求你了!',
-	'看到你心情就特别好!',
-	'一天没和你聊天，就觉得哪里不对劲!',
-	'不要这样嘛!',
-	'你才傻瓜呢!',
-	'快亲亲人家啦!',
-	'我家宝贝就这样，嘿嘿',
-	'如果我不在这了，你会喜欢别的女孩么!',
-	'想你想的睡不着',
-	'别生气了，我错了还不行呀~'
-]
+# 加载随机文本回复配置
+def load_conversition_config_csv():
+	csv_file = open(conversition_config_file,encoding='utf-8')
+	csv_reader = csv.reader(csv_file)
 
+	try:
+		for row in csv_reader:
+			if(len(row) > 0):
+				auto_text_reply.append(row)
+				print(row)
+	finally:
+		pass
+	csv_file.close()
+
+# 载入文章配置表
+def load_article_config_csv():
+	csv_file = open(article_config_file,encoding='utf-8')
+	csv_reader = csv.reader(csv_file)
+	index = -1
+
+	try:
+		for row in csv_reader:
+			index = index + 1
+			if index <= 0:
+				continue
+
+			title = row[0]
+			des = row[1]
+			permanent_url = row[2]
+			conver_url = row[3]
+			public_date = row[4]
+			public_symbol = row[5]
+
+			article = Article(title,des,permanent_url,conver_url,public_date,public_symbol)
+			if not article.is_publiced:
+				unpublic_article_list.append(article)
+			else:
+				public_article_list.append(article)
+	finally:
+		pass
+	csv_file.close()
+	print("已发表图文数量：",len(public_article_list))
+
+# 从已发布的文章中随机选择一篇推送给用户
+def get_publiced_article_for_ramdom():
+	count = len(public_article_list)
+	print("数量:",count)
+	selected_index = random.randint(0,count - 1)
+	article = public_article_list[selected_index]
+	return article
+
+
+# 获取一个随机文本返回给用户
 def get_random_text_reply_content():
 	count = len(auto_text_reply)
 	selected_index = random.randint(0,count - 1)
 	return auto_text_reply[selected_index]
 
-
+# 解析用户发过来的xml
 def parse_xml(xmlData):
 	ToUserName = xmlData.find('ToUserName').text
 	FromUserName = xmlData.find('FromUserName').text
@@ -78,6 +111,7 @@ def parse_xml(xmlData):
 	#print(ToUserName,FromUserName,CreateTime,MsgType,Content,MsgId)
 	return ToUserName,FromUserName,CreateTime,MsgType
 
+# 解析用户发来的文本xml
 def get_text_reply_xml(ToUserName, FromUserName, Content):
 	raw_xml = '''<xml>
 <ToUserName><![CDATA[粉丝号]]></ToUserName>
@@ -92,6 +126,7 @@ def get_text_reply_xml(ToUserName, FromUserName, Content):
 	raw_xml = raw_xml.replace("时间戳",str(int(time.time())))
 	return raw_xml
 
+# 解析用户发来的图片xml
 def get_image_reply_xml(ToUserName,FromUserName):
 	raw_xml = '''<xml>
 <ToUserName><![CDATA[粉丝号]]></ToUserName>
@@ -106,7 +141,10 @@ def get_image_reply_xml(ToUserName,FromUserName):
 	raw_xml = raw_xml.replace("时间戳",str(int(time.time())))
 	return raw_xml
 
+# 获取一个图文回复xml
 def get_image_and_text_reply_xml(ToUserName, FromUserName):
+	article = get_publiced_article_for_ramdom()
+
 	raw_xml = '''<xml>
 <ToUserName><![CDATA[粉丝号]]></ToUserName>
 <FromUserName><![CDATA[公众号]]></FromUserName>
@@ -115,17 +153,24 @@ def get_image_and_text_reply_xml(ToUserName, FromUserName):
 <ArticleCount>1</ArticleCount>
 <Articles>
 <item>
-<Title><![CDATA[标题1]]></Title> 
-<Description><![CDATA[这里是描述1]]></Description>
-<PicUrl><![CDATA[https://mmbiz.qpic.cn/mmbiz_png/WS65rNlb1arLwGNG3ooArU883uoCFSfhqohoicG93jhcISWRfNcmpyKgHlMVZzvICMib0PWicfOkkLSLSYycfRq1g/0?wx_fmt=png]]></PicUrl>
-<Url><![CDATA[http://mp.weixin.qq.com/s/WlyfDSiJeZhaFQlizI-BHA]]></Url>
+<Title><![CDATA[标题]]></Title> 
+<Description><![CDATA[描述]]></Description>
+<PicUrl><![CDATA[封面图片地址]]></PicUrl>
+<Url><![CDATA[文章地址]]></Url>
 </item>
 </Articles>
 </xml>'''
 	raw_xml = raw_xml.replace("粉丝号",ToUserName)
 	raw_xml = raw_xml.replace("公众号", FromUserName)
-	raw_xml = raw_xml.replace("时间戳",str(int(time.time())))	
+	raw_xml = raw_xml.replace("时间戳",str(int(time.time())))
+	raw_xml = raw_xml.replace("标题", article.title)
+	raw_xml = raw_xml.replace("描述", article.des)
+	raw_xml = raw_xml.replace("封面图片地址",article.conver_url)
+	raw_xml = raw_xml.replace("文章地址", article.permanent_url)
 	return raw_xml
+
+
+
 
 def index(request):
 	echostr = 'success'
@@ -136,13 +181,6 @@ def index(request):
 
 	logging.info("Echo STR:" + echostr)
 	return web.Response(body=echostr.encode('utf-8'))
-
-	#return web.Response(body=echostr.encode('utf-8'))
-
-
-	#resp = web.Response(body=b'<h1>Fuck you man</h1>')
-	#resp.content_type = 'text/html;charset=utf-8'
-	#return resp
 
 async def postWX(request):
 	info = await request.text()
@@ -179,10 +217,10 @@ def init(loop):
 	app = web.Application(loop=loop)
 	app.router.add_route('GET','/wx',index)
 	app.router.add_route('POST','/wx',postWX)
+	load_article_config_csv()
+	load_conversition_config_csv()
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1',7001)
-	#yield from get_images_list()
-	logging.info('Server started at http://127.0.0.1:7000...')
-	get_images_list()
+	logging.info('Server started at http://127.0.0.1:7001...')
 	return srv
 
 loop = asyncio.get_event_loop()
