@@ -201,8 +201,8 @@ async def postWX(request):
 		if(content == "我想要"):
 			msg = get_image_and_text_reply_xml(FromUserName,ToUserName)
 			return web.Response(body=msg.encode('utf-8'))
-		else:
-			return web.Response(body=msg.encode('utf-8'))
+		#else:
+			#return web.Response(body=msg.encode('utf-8'))
 	elif MsgType.lower() == 'voice':
 		#msg = get_image_reply_xml(FromUserName,ToUserName)
 		msg = get_image_and_text_reply_xml(FromUserName,ToUserName)
